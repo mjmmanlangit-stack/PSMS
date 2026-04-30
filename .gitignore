@@ -1,0 +1,34 @@
+# Git ignore file for PSMS (Parish Stewardship Management System)
+
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode
+.idea
+
+# IDE
+*.sublime-project
+*.sublime-workspace
+
+# Node modules (if using any)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+logs/
+
+# Local environment files
+.env
+.env.local
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# System files
+.folder

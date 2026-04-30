@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View My Record - Parish Stewardship Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/landing.css">
+    <link rel="stylesheet" href="assets/css/parishioner-access.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light landing-navbar sticky-top">
+        <div class="container-lg">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-building"></i>
+                <span class="ms-2 fw-bold">PSMS</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-cta" href="login.html">Log In</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Parishioner Access Section -->
+    <section class="access-section">
+        <div class="access-container">
+            <!-- Background decoration -->
+            <div class="access-background-shape"></div>
+
+            <!-- Access Card -->
+            <div class="access-card">
+                <!-- Header -->
+                <div class="access-header">
+                    <div class="access-logo">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <h1 class="access-title">View My Record</h1>
+                    <p class="access-subtitle">Parish Stewardship Management System</p>
+                </div>
+
+                <!-- Welcome Message -->
+                <div class="access-welcome">
+                    <h2>Welcome</h2>
+                    <p>Enter your serial number to view your record</p>
+                </div>
+
+                <!-- Lookup Form -->
+                <form id="accessForm" class="access-form" onsubmit="handleLookup(event)">
+                    <!-- Serial Number Field -->
+                    <div class="form-group">
+                        <label for="serialNumber" class="form-label">Serial Number</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-hash"></i>
+                            <input 
+                                type="text" 
+                                id="serialNumber" 
+                                class="form-control access-input" 
+                                placeholder="Enter your serial number"
+                                required
+                                aria-label="Serial Number"
+                            >
+                        </div>
+                        <span class="error-message" id="serialError"></span>
+                    </div>
+
+                    <!-- View Record Button -->
+                    <button type="submit" class="btn-access" id="accessBtn">
+                        <span class="btn-text">View My Record</span>
+                        <span class="btn-loader" id="btnLoader">
+                            <i class="bi bi-hourglass-split"></i>
+                        </span>
+                    </button>
+
+                    <!-- Error Message -->
+                    <div class="alert alert-danger alert-dismissible fade hidden" id="accessError" role="alert">
+                        <span id="errorText"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </form>
+
+                <!-- Record Display Section (Initially Hidden) -->
+                <div id="recordSection" class="record-section hidden">
+                    <!-- Record Card -->
+                    <div class="record-card">
+                        <div class="record-header">
+                            <h3 class="record-title">
+                                <i class="bi bi-person-circle"></i>
+                                Your Record
+                            </h3>
+                            <button type="button" class="btn-close-record" onclick="resetForm()" aria-label="Close record">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+
+                        <div class="record-body">
+                            <!-- Personal Information -->
+                            <div class="record-section-group">
+                                <h4 class="record-section-title">Personal Information</h4>
+                                <div class="record-row">
+                                    <div class="record-field">
+                                        <label class="record-label">Serial Number</label>
+                                        <p class="record-value" id="displaySerial">-</p>
+                                    </div>
+                                    <div class="record-field">
+                                        <label class="record-label">Full Name</label>
+                                        <p class="record-value" id="displayName">-</p>
+                                    </div>
+                                </div>
+
+                                <div class="record-row">
+                                    <div class="record-field">
+                                        <label class="record-label">Barangay</label>
+                                        <p class="record-value" id="displayBarangay">-</p>
+                                    </div>
+                                    <div class="record-field">
+                                        <label class="record-label">Street/Purok</label>
+                                        <p class="record-value" id="displayStreet">-</p>
+                                    </div>
+                                </div>
+
+                                <div class="record-row">
+                                    <div class="record-field">
+                                        <label class="record-label">Contact Number</label>
+                                        <p class="record-value" id="displayContact">-</p>
+                                    </div>
+                                    <div class="record-field">
+                                        <label class="record-label">Member Since</label>
+                                        <p class="record-value" id="displayDateAdded">-</p>
+                                    </div>
+                                </div>
+
+                                <div class="record-row full-width">
+                                    <div class="record-field">
+                                        <label class="record-label">Notes</label>
+                                        <p class="record-value notes-value" id="displayNotes">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Record Footer with Action -->
+                        <div class="record-footer">
+                            <button type="button" class="btn-lookup-another" onclick="resetForm()">
+                                <i class="bi bi-search"></i>
+                                Look Up Another Record
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- No Record Found Message (Initially Hidden) -->
+                <div id="noRecordSection" class="no-record-section hidden">
+                    <div class="no-record-content">
+                        <i class="bi bi-search"></i>
+                        <h3>No Record Found</h3>
+                        <p>We couldn't find a record with that serial number.</p>
+                        <p class="no-record-help">Please check the serial number and try again.</p>
+                        <button type="button" class="btn-try-again" onclick="resetForm()">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Back to Home -->
+                <div class="access-footer">
+                    <p>
+                        <a href="index.html" class="back-link">
+                            <i class="bi bi-arrow-left"></i>
+                            Back to Home
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Handle Lookup Form Submission
+        function handleLookup(event) {
+            event.preventDefault();
+            
+            const serialNumber = document.getElementById('serialNumber').value.trim();
+            
+            // Clear previous errors
+            clearErrors();
+            
+            // Validation
+            if (!serialNumber) {
+                showError('serialError', 'Serial number is required');
+                return;
+            }
+            
+            // Show loading state
+            setLoadingState(true);
+            
+            // Simulate API call (800ms delay)
+            setTimeout(() => {
+                fetchParishionerRecord(serialNumber);
+            }, 800);
+        }
+
+        // Fetch Parishioner Record
+        function fetchParishionerRecord(serialNumber) {
+            // In production, this would be an actual API call:
+            // fetch(`/api/parishioner/${serialNumber}`)
+            //     .then(response => response.json())
+            //     .then(data => displayRecord(data))
+            //     .catch(error => showAccessError(error.message));
+
+            // For now, we'll simulate fetching from localStorage
+            const parishioners = getParishioners();
+            const record = parishioners.find(p => p.serialNumber === serialNumber);
+            
+            setLoadingState(false);
+            
+            if (record) {
+                displayRecord(record);
+            } else {
+                showNoRecordFound();
+            }
+        }
+
+        // Display Record
+        function displayRecord(record) {
+            // Populate record fields
+            document.getElementById('displaySerial').textContent = record.serialNumber || '-';
+            document.getElementById('displayName').textContent = record.name || '-';
+            document.getElementById('displayBarangay').textContent = record.barangay || '-';
+            document.getElementById('displayStreet').textContent = record.street || '-';
+            document.getElementById('displayContact').textContent = record.contact || '-';
+            document.getElementById('displayDateAdded').textContent = formatDate(record.dateAdded) || '-';
+            document.getElementById('displayNotes').textContent = record.notes || 'No additional notes';
+            
+            // Show record section, hide form and no record section
+            document.getElementById('accessForm').classList.add('hidden');
+            document.getElementById('recordSection').classList.remove('hidden');
+            document.getElementById('noRecordSection').classList.add('hidden');
+            
+            // Scroll to record
+            document.getElementById('recordSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Show No Record Found
+        function showNoRecordFound() {
+            // Show no record section, hide form and record section
+            document.getElementById('accessForm').classList.add('hidden');
+            document.getElementById('noRecordSection').classList.remove('hidden');
+            document.getElementById('recordSection').classList.add('hidden');
+        }
+
+        // Reset Form
+        function resetForm() {
+            document.getElementById('accessForm').reset();
+            document.getElementById('serialNumber').focus();
+            clearErrors();
+            setLoadingState(false);
+            
+            // Hide record and no record sections
+            document.getElementById('recordSection').classList.add('hidden');
+            document.getElementById('noRecordSection').classList.add('hidden');
+            document.getElementById('accessForm').classList.remove('hidden');
+            
+            // Scroll to form
+            document.getElementById('accessForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Format Date
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        // Get Parishioners from localStorage
+        function getParishioners() {
+            const data = localStorage.getItem('psms_parishioners');
+            return data ? JSON.parse(data) : [];
+        }
+
+        // Utility Functions
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function clearErrors() {
+            document.getElementById('serialError').textContent = '';
+            document.getElementById('serialError').style.display = 'none';
+        }
+
+        function showAccessError(message) {
+            const errorAlert = document.getElementById('accessError');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorAlert.classList.remove('hidden');
+            errorAlert.classList.add('show');
+            setLoadingState(false);
+        }
+
+        function setLoadingState(loading) {
+            const accessBtn = document.getElementById('accessBtn');
+            const btnLoader = document.getElementById('btnLoader');
+            const btnText = document.querySelector('.btn-text');
+            
+            if (loading) {
+                accessBtn.disabled = true;
+                btnText.style.display = 'none';
+                btnLoader.style.display = 'inline-block';
+            } else {
+                accessBtn.disabled = false;
+                btnText.style.display = 'inline';
+                btnLoader.style.display = 'none';
+            }
+        }
+
+        // Focus on serial number field on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('serialNumber').focus();
+        });
+    </script>
+</body>
+</html>

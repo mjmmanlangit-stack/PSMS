@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parish Stewardship Management System - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <a href="dashboard.html" class="sidebar-brand">
+                    <i class="bi bi-building"></i>
+                    <span>PSMS</span>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="parishioners.html" class="nav-item">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Parishioners</span>
+                </a>
+                <a href="contributions.html" class="nav-item">
+                    <i class="bi bi-cash-coin"></i>
+                    <span>Contributions</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation Bar -->
+            <nav class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-toggle-sidebar" onclick="toggleSidebar()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h1 class="page-title">Dashboard</h1>
+                </div>
+                <div class="topbar-right">
+                    <span class="user-name">Admin</span>
+                    <i class="bi bi-person-circle"></i>
+                </div>
+            </nav>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h6>Total Parishioners</h6>
+                                <h2 id="totalParishioners">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-cash-coin"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h6>Total Contributions</h6>
+                                <h2 id="totalContributions">₱0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h6>Recent Activities</h6>
+                                <h2 id="recentActivities">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Recent Activities</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="activitiesList" class="activities-list">
+                                    <div class="text-muted text-center py-5">
+                                        No activities yet. Start by adding parishioners or recording contributions.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">System Overview</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="overview-item">
+                                    <span>Barangays Covered</span>
+                                    <span class="fw-bold" id="barangayCount">0</span>
+                                </div>
+                                <div class="overview-item">
+                                    <span>Total Contributions (This Month)</span>
+                                    <span class="fw-bold" id="monthlyContributions">₱0</span>
+                                </div>
+                                <div class="overview-item">
+                                    <span>Average Contribution</span>
+                                    <span class="fw-bold" id="avgContribution">₱0</span>
+                                </div>
+                                <div class="overview-item">
+                                    <span>Last Updated</span>
+                                    <span class="fw-bold" id="lastUpdated">Never</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+        });
+    </script>
+</body>
+</html>
