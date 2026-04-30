@@ -696,3 +696,16 @@ document.addEventListener('DOMContentLoaded', function() {
         dateInput.value = today;
     }
 });
+
+// ==================== Authentication & Logout ====================
+function handleLogout() {
+    // Show confirmation dialog
+    if (confirm('Are you sure you want to logout?')) {
+        // Clear session storage
+        sessionStorage.removeItem('userRole');
+        sessionStorage.removeItem('userName');
+        
+        // Redirect to login page
+        window.location.href = 'login.html';
+    }
+}
