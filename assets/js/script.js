@@ -157,13 +157,69 @@ function addActivity(message, type = 'info') {
 }
 
 // ==================== Sidebar Toggle ====================
+// Mobile sidebar state management
+let isSidebarOpen = false;
+let isToggling = false; // Prevent rapid clicking/stacking
+
 function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.querySelector('.main-content');
+    // Prevent multiple rapid toggles
+    if (isToggling) return;
+    isToggling = true;
     
-    sidebar.classList.toggle('collapsed');
-    mainContent.classList.toggle('expanded');
+    const isMobile = window.innerWidth <= 768;
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (isMobile) {
+        // Mobile: Toggle sidebar visibility with overlay
+        if (isSidebarOpen) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    } else {
+        // Desktop: Toggle collapsed state
+        sidebar.classList.toggle('collapsed');
+        const mainContent = document.querySelector('.main-content');
+        mainContent.classList.toggle('expanded');
+    }
+    
+    // Re-enable toggle after animation completes
+    setTimeout(() => {
+        isToggling = false;
+    }, 300);
 }
+
+function openSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.add('mobile-open');
+    overlay.classList.add('active');
+    isSidebarOpen = true;
+    
+    // Prevent body scroll when sidebar is open
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('active');
+    isSidebarOpen = false;
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+}
+
+// Handle window resize - close sidebar on desktop view
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 768 && isSidebarOpen) {
+        closeSidebar();
+    }
+});
 
 // ==================== Dashboard Functions ====================
 
@@ -695,6 +751,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const today = new Date().toISOString().split('T')[0];
         dateInput.value = today;
     }
+    
+    // Setup sidebar nav item click handlers for mobile
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            if (window.innerWidth <= 768 && isSidebarOpen) {
+                closeSidebar();
+            }
+        });
+    });
 });
 
 // ==================== Authentication & Logout ====================
