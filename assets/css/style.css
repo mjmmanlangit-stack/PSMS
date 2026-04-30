@@ -169,6 +169,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    gap: 16px;
 }
 
 .topbar-left {
@@ -205,12 +206,22 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .user-name {
     font-size: 13px;
     font-weight: 600;
     color: var(--primary-black);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topbar-right i:not(.btn-logout i) {
+    font-size: 18px;
+    flex-shrink: 0;
 }
 
 .btn-logout {
@@ -227,6 +238,8 @@ body {
     gap: 6px;
     transition: var(--transition);
     letter-spacing: 0.3px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .btn-logout:hover {
@@ -652,6 +665,7 @@ body {
 @media (max-width: 768px) {
     :root {
         --sidebar-width: 70px;
+        --topbar-height: 65px;
     }
 
     .main-content {
@@ -678,11 +692,25 @@ body {
     }
 
     .topbar {
-        padding: 0 15px;
+        padding: 0 16px;
+        gap: 12px;
     }
-
+    
+    .topbar-left {
+        gap: 10px;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .topbar-right {
+        gap: 8px;
+    }
+    
     .page-title {
-        font-size: 18px;
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .stat-card {
@@ -706,6 +734,49 @@ body {
     }
 }
 
+@media (max-width: 640px) {
+    .topbar {
+        padding: 0 12px;
+        height: 60px;
+        gap: 8px;
+    }
+    
+    .topbar-left {
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .btn-toggle-sidebar {
+        font-size: 20px;
+        padding: 2px;
+    }
+    
+    .page-title {
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .topbar-right {
+        gap: 6px;
+    }
+    
+    .user-name {
+        display: none;
+    }
+    
+    .btn-logout span {
+        display: none;
+    }
+    
+    .btn-logout {
+        padding: 8px 10px;
+        gap: 0;
+    }
+}
+
 @media (max-width: 576px) {
     .page-content {
         padding: 15px;
@@ -723,17 +794,6 @@ body {
     .btn {
         font-size: 12px;
         padding: 8px 12px;
-    }
-
-    .topbar {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .topbar-left,
-    .topbar-right {
-        width: 100%;
-        justify-content: space-between;
     }
 
     .row > div {
