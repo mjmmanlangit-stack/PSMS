@@ -262,10 +262,6 @@ function updateDashboard() {
     
     // Display activities
     displayActivities();
-    
-    // Initialize and update Monthly Summary
-    updateMonthlySummaryBarangayFilter();
-    updateMonthlySummary();
 }
 
 function displayActivities() {
@@ -324,12 +320,6 @@ function addParishioner(event) {
     // Update table
     displayParishioners();
     updateBarangayFilter();
-    
-    // Update dashboard if visible
-    if (document.getElementById('monthlySummaryBarangayFilter')) {
-        updateMonthlySummaryBarangayFilter();
-        updateMonthlySummary();
-    }
 }
 
 function displayParishioners() {
@@ -462,12 +452,6 @@ function saveParishioner() {
         displayParishioners();
         updateBarangayFilter();
         
-        // Update dashboard if visible
-        if (document.getElementById('monthlySummaryBarangayFilter')) {
-            updateMonthlySummaryBarangayFilter();
-            updateMonthlySummary();
-        }
-        
         bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
     }
 }
@@ -484,12 +468,6 @@ function deleteParishioner(id) {
         
         displayParishioners();
         updateBarangayFilter();
-        
-        // Update dashboard if visible
-        if (document.getElementById('monthlySummaryBarangayFilter')) {
-            updateMonthlySummaryBarangayFilter();
-            updateMonthlySummary();
-        }
     }
 }
 
@@ -534,11 +512,6 @@ function addContribution(event) {
     // Update displays
     displayContributions();
     updateContributionStats();
-    
-    // Update dashboard if visible
-    if (document.getElementById('monthlySummaryBarangayFilter')) {
-        updateMonthlySummary();
-    }
 }
 
 function displayContributions() {
@@ -733,11 +706,6 @@ function saveContribution() {
         updateContributionStats();
         filterContributions();
         
-        // Update dashboard if visible
-        if (document.getElementById('monthlySummaryBarangayFilter')) {
-            updateMonthlySummary();
-        }
-        
         bootstrap.Modal.getInstance(document.getElementById('editContributionModal')).hide();
     }
 }
@@ -755,139 +723,7 @@ function deleteContribution(id) {
         displayContributions();
         updateContributionStats();
         filterContributions();
-        
-        // Update dashboard if visible
-        if (document.getElementById('monthlySummaryBarangayFilter')) {
-            updateMonthlySummary();
-        }
     }
-}
-
-// ==================== Monthly Summary Functions ====================
-
-/**
- * Update the barangay filter dropdown for Monthly Summary
- */
-function updateMonthlySummaryBarangayFilter() {
-    const parishioners = getParishioners();
-    const barangays = [...new Set(parishioners.map(p => p.barangay))].sort();
-    
-    const filterSelect = document.getElementById('monthlySummaryBarangayFilter');
-    if (filterSelect) {
-        const currentValue = filterSelect.value;
-        filterSelect.innerHTML = '<option value="">All Barangays</option>' +
-            barangays.map(b => `<option value="${b}">${b}</option>`).join('');
-        filterSelect.value = currentValue;
-    }
-}
-
-/**
- * Calculate fund distribution based on total amount
- * 30% Diocese Share
- * 30% Parish Share
- * 30% Barangay Share
- * 10% Health Care Share
- */
-function calculateFundDistribution(totalAmount) {
-    const dioceseShare = totalAmount * 0.30;
-    const parishShare = totalAmount * 0.30;
-    const barangayShare = totalAmount * 0.30;
-    const healthCareShare = totalAmount * 0.10;
-    
-    return {
-        diocese: dioceseShare,
-        parish: parishShare,
-        barangay: barangayShare,
-        healthCare: healthCareShare,
-        total: totalAmount
-    };
-}
-
-/**
- * Format currency to Philippine Pesos
- */
-function formatCurrency(amount) {
-    return '₱' + parseFloat(amount).toLocaleString('en-PH', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-}
-
-/**
- * Update the Monthly Summary with filtered data
- */
-function updateMonthlySummary() {
-    const parishioners = getParishioners();
-    const contributions = getContributions();
-    
-    // Get selected barangay filter
-    const selectedBarangay = document.getElementById('monthlySummaryBarangayFilter').value;
-    
-    // Get current month date range
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    
-    // Filter contributions by barangay and month
-    let filteredContributions = contributions.filter(c => {
-        const contDate = new Date(c.date);
-        return contDate >= monthStart && contDate <= monthEnd;
-    });
-    
-    // If barangay is selected, filter by that barangay
-    if (selectedBarangay) {
-        const barangayParishionerIds = parishioners
-            .filter(p => p.barangay === selectedBarangay)
-            .map(p => p.id);
-        
-        filteredContributions = filteredContributions.filter(c => 
-            barangayParishionerIds.includes(c.parishionerId)
-        );
-    }
-    
-    // Get parishioners in selected barangay (or all if no selection)
-    let relevantParishioners = parishioners;
-    if (selectedBarangay) {
-        relevantParishioners = parishioners.filter(p => p.barangay === selectedBarangay);
-    }
-    
-    // Calculate totals
-    const totalContributions = filteredContributions.reduce((sum, c) => sum + parseFloat(c.amount || 0), 0);
-    const transactionCount = filteredContributions.length;
-    const parishionerCount = relevantParishioners.length;
-    const averagePerParishioner = parishionerCount > 0 ? totalContributions / parishionerCount : 0;
-    const averagePerTransaction = transactionCount > 0 ? totalContributions / transactionCount : 0;
-    
-    // Get highest contribution
-    let highestAmount = 0;
-    let highestFrom = '-';
-    if (filteredContributions.length > 0) {
-        const highest = filteredContributions.reduce((max, c) => 
-            parseFloat(c.amount) > parseFloat(max.amount) ? c : max
-        );
-        highestAmount = parseFloat(highest.amount);
-        highestFrom = highest.parishionerName || '-';
-    }
-    
-    // Update summary statistics
-    document.getElementById('summaryCmTotalContributions').textContent = formatCurrency(totalContributions);
-    document.getElementById('summaryCmTransactionCount').textContent = transactionCount + (transactionCount === 1 ? ' transaction' : ' transactions');
-    document.getElementById('summaryCmAveragePerParishioner').textContent = formatCurrency(averagePerParishioner);
-    document.getElementById('summaryCmParishionerCount').textContent = parishionerCount + (parishionerCount === 1 ? ' parishioner' : ' parishioners');
-    document.getElementById('summaryCmAveragePerTransaction').textContent = formatCurrency(averagePerTransaction);
-    document.getElementById('summaryCmStatus').textContent = 'Current month';
-    document.getElementById('summaryCmHighestAmount').textContent = formatCurrency(highestAmount);
-    document.getElementById('summaryCmHighestFrom').textContent = highestFrom;
-    
-    // Calculate fund distribution
-    const distribution = calculateFundDistribution(totalContributions);
-    
-    // Update fund distribution display
-    document.getElementById('fundDistributionTotal').textContent = formatCurrency(distribution.total);
-    document.getElementById('fundDiocese').textContent = formatCurrency(distribution.diocese);
-    document.getElementById('fundParish').textContent = formatCurrency(distribution.parish);
-    document.getElementById('fundBarangay').textContent = formatCurrency(distribution.barangay);
-    document.getElementById('fundHealthCare').textContent = formatCurrency(distribution.healthCare);
 }
 
 // ==================== Page Initialization ====================
